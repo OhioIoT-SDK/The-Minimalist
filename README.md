@@ -185,4 +185,6 @@ This uses plain `WiFiClient` and connects without TLS or credentials.
 
 ## License
 
-Add your license here (MIT, Apache-2.0, etc.).
+MIT License — Copyright (c) 2026 Ohioiot, LLC
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies, subject to the copyright notice and this permission notice appearing in all copies.
