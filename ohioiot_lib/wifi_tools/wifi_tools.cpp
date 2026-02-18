@@ -5,6 +5,8 @@ WiFi_Tools::WiFi_Tools() {}
 
 WiFi_Tools wifi_tools;
 
+
+
 void WiFi_Tools::begin(const char * ssid, const char * pass) {
 	WiFi.setAutoReconnect(false);
 	WiFi.persistent(false);
@@ -12,6 +14,8 @@ void WiFi_Tools::begin(const char * ssid, const char * pass) {
 	Serial.println("\n\twifi connecting...");
 	WiFi.begin(ssid, pass);
 }
+
+
 
 void WiFi_Tools::reconnect() {
 	
@@ -22,10 +26,10 @@ void WiFi_Tools::reconnect() {
 	}
 }
 
+
+
 void WiFi_Tools::_event_handler(WiFiEvent_t event, WiFiEventInfo_t info) {
 
-	if (wifi_tools._event_logging_enabled) wifi_tools._log_event(event, info);
-	
 	if (event == ARDUINO_EVENT_WIFI_STA_DISCONNECTED) {
 		if (wifi_tools.is_connected) Serial.println("\n\twifi disconnected...\n");
 		wifi_tools.is_connected = false;
@@ -39,9 +43,4 @@ void WiFi_Tools::_event_handler(WiFiEvent_t event, WiFiEventInfo_t info) {
 		wifi_tools.is_connected = true;
 	}
 
-}
-
-
-void WiFi_Tools::log_events() {
-	_event_logging_enabled = true;
 }

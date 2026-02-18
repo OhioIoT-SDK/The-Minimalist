@@ -8,8 +8,8 @@ Mqtt mqtt;
 
 
 void Mqtt::setup(const char * mqtt_host, int mqtt_port, const char * mqtt_username, const char * mqtt_password, const char * device_id, const char* ca_cert) {
-    client.setClient(_wifi_client);
-    client.setServer(mqtt_host, mqtt_port);
+    _mqtt_client.setClient(_wifi_client);
+    _mqtt_client.setServer(mqtt_host, mqtt_port);
 
  	strcpy(_mqtt_username, mqtt_username);
 	strcpy(_mqtt_password, mqtt_password);
@@ -21,8 +21,8 @@ void Mqtt::setup(const char * mqtt_host, int mqtt_port, const char * mqtt_userna
 
 
 void Mqtt::setup(const char * mqtt_host, int mqtt_port, const char * device_id) {
-    client.setClient(_wifi_client);
-    client.setServer(mqtt_host, mqtt_port);
+    _mqtt_client.setClient(_wifi_client);
+    _mqtt_client.setServer(mqtt_host, mqtt_port);
 
     strcpy(_device_id, device_id);
 }
@@ -31,7 +31,7 @@ void Mqtt::setup(const char * mqtt_host, int mqtt_port, const char * device_id) 
 
 void Mqtt::maintain() {
 
-    if (!client.connected() || !is_connected) {
+    if (!_mqtt_client.connected() || !is_connected) {
         bool should_reconnect = _is_first_connect || millis() - _retry_timer > RETRY_INTERVAL;
         if (should_reconnect) {
             Serial.println("\tmqtt connecting...");
@@ -39,9 +39,9 @@ void Mqtt::maintain() {
             bool connected = false;
 
             #ifdef ALLOW_UNSECURED_MQTT
-                connected = client.connect(_device_id);
+                connected = _mqtt_client.connect(_device_id);
             #else
-                connected = client.connect(_device_id, _mqtt_username, _mqtt_password);
+                connected = _mqtt_client.connect(_device_id, _mqtt_username, _mqtt_password);
             #endif
 
             if (connected) {
@@ -49,7 +49,7 @@ void Mqtt::maintain() {
                 Serial.println("\tmqtt connected...");
                 is_connected = true;
 
-                _subscribe_to_all();
+                if (set_subscriptions) set_subscriptions();
 
             } else {
                 Serial.println("\txx failed to connect to mqtt");
@@ -59,7 +59,7 @@ void Mqtt::maintain() {
             _is_first_connect = false;
         }
     } else {
-        client.loop();       
+        _mqtt_client.loop();       
     }
   
 }

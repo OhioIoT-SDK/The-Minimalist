@@ -3,8 +3,7 @@
 #include "ohioiot.h"
 
 #include "wifi_tools.h"
-#include "mqtt.h"
-#include "storage.h"
+
 #include "ca_cert.h"
 #include "credentials.h"
 
@@ -14,10 +13,10 @@ OhioIoT::OhioIoT() {}
 OhioIoT ohioiot;
 
 
-void OhioIoT::setup() {
-	char device_id[9];
-	storage.get_or_set_id(device_id);
+void OhioIoT::setup(const char * device_id) {
+
 	wifi_tools.begin(WIFI_SSID, WIFI_PASS);
+
 	#ifdef ALLOW_UNSECURED_MQTT
 		mqtt.setup(MQTT_HOST, MQTT_PORT, device_id);
 	#else

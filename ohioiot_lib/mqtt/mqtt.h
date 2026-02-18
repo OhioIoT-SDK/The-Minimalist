@@ -10,7 +10,7 @@
 
 #define RETRY_INTERVAL 3000
 
-using MessageHandler = void (*)(char *, char *);
+using MessageHandler = void (*)(const char *, const char *);
 
 class Mqtt {
 
@@ -18,24 +18,22 @@ class Mqtt {
 
         Mqtt();
 
-        PubSubClient client;
+
 
         // connect
         void setup(const char *, int, const char *, const char *, const char *, const char *);
         void setup(const char *, int, const char *);
         void maintain();
 
-        void report_disconnect();
+
         bool is_connected = false;
 
         // publish
         void publish(const char *, const char *);
-        void publish(const char *, float);
-        void publish(const char *, int);
-        void publish(const char *);
 
         // subscribe
-        void set_subscriptions(const char **, int);
+        void subscribe(const char *);
+        void (*set_subscriptions)() = nullptr; 
 
         // handle
         void set_callback(MessageHandler);
@@ -48,23 +46,22 @@ class Mqtt {
             WiFiClientSecure _wifi_client;
         #endif
         
-
+        PubSubClient _mqtt_client;
 
         // connect
         char _mqtt_username[32];    // not used if using an unsecured connection
 		char _mqtt_password[32];    // not used if using an unsecured connection
 
+        void report_disconnect();
+        friend class OhioIoT;
+
         unsigned long _retry_timer;
         bool _is_first_connect = true;
-        char _device_id[9];
+        char _device_id[32];
 
         // publish
-        void _publish(const char *, const char *);
 
         // subscribe
-        const char ** _subscription_list = nullptr;
-        int _sub_list_length = 0;
-        void _subscribe_to_all();
 
         // handle
         MessageHandler _stored_handler;
